@@ -1,5 +1,7 @@
 package stage.BpApi.chaoukat_Riad.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,8 +31,9 @@ public class Compte {
 
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "client_id",nullable = false)
+    @JsonBackReference
     private Client client_id;
     @OneToMany(mappedBy="compte_src",cascade = CascadeType.ALL)
     private Set<Virement> Vir1 = new HashSet<>();

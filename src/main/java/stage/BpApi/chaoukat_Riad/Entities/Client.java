@@ -1,5 +1,6 @@
 package stage.BpApi.chaoukat_Riad.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.* ;
 import jdk.jfr.Timestamp;
 import org.apache.catalina.UserDatabase;
@@ -29,6 +30,8 @@ public class Client {
     private Integer age;
     @Column(unique = true,nullable = false)
     private String email;
+    @Column(nullable=false)
+    private String password;
     @Column(nullable = false,name="adresse")
     private String adresse;
     @Column(nullable = false)
@@ -42,12 +45,15 @@ public class Client {
     private Date created_at;
 
     @OneToMany(mappedBy = "client_id", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private Set<Compte> Accounts = new HashSet<>();
 
-    public Client(String cin){
-        this.cin = cin;
-    };
-    public Client(String id, String nom, String prenom, Integer age, String email, String adresse, String mobile, String cin, String adresse_banque_origine) {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "role_id")
+    private Role role;
+
+
+    public Client(String id, String nom, String prenom, Integer age, String email, String adresse, String mobile, String cin, String adresse_banque_origine,Role role,String password) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -57,7 +63,26 @@ public class Client {
         this.mobile = mobile;
         this.cin = cin;
         this.adresse_banque_origine = adresse_banque_origine;
+        this.role=role;
+        this.password=password;
 
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public void setCreated_at(Date created_at) {
@@ -152,22 +177,22 @@ public class Client {
         this.adresse_banque_origine = adresse_banque_origine;
     }
 
-
-
-
     @Override
     public String toString() {
         return "Client{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", nom='" + nom + '\'' +
                 ", prenom='" + prenom + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
-                ", Adresse='" + adresse + '\'' +
+                ", password='" + password + '\'' +
+                ", adresse='" + adresse + '\'' +
                 ", mobile='" + mobile + '\'' +
-                ", Cin='" + cin + '\'' +
+                ", cin='" + cin + '\'' +
                 ", adresse_banque_origine='" + adresse_banque_origine + '\'' +
-                " " +
+                ", created_at=" + created_at +
+                ", Accounts=" + Accounts +
+                ", role=" + role +
                 '}';
     }
 }

@@ -4,9 +4,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import stage.BpApi.chaoukat_Riad.Entities.Client;
+import stage.BpApi.chaoukat_Riad.Entities.Dto.ClientDto;
 import stage.BpApi.chaoukat_Riad.Entities.Fournisseur;
 import stage.BpApi.chaoukat_Riad.Repositories.FournisseurRepo;
 import stage.BpApi.chaoukat_Riad.Repositories.clientRepo;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -42,8 +47,40 @@ public String SaveClient(Client client) {
    }
 
 
-   public Iterable<Client> getallclient(){
-        return this.clientRepo.findAll();
+
+
+   public ClientDto findById(String id){
+        return clientRepo.findById(id).map(client ->new ClientDto(
+                client.getId(),
+                client.getNom(),
+                client.getPrenom(),
+                client.getAge(),
+                client.getEmail(),
+                client.getMobile(),
+                client.getCin(),
+                client.getAdresse(),
+                client.getAdresse_banque_origine(),
+                client.getCreated_at()
+        )).orElseThrow(() -> new RuntimeException("Client not found"));
+   }
+
+
+
+
+
+   public List<ClientDto> getallclient(){
+        return clientRepo.findAll().stream().map(client -> new ClientDto(
+                client.getId(),
+                client.getNom(),
+                client.getPrenom(),
+                client.getAge(),
+                client.getEmail(),
+                client.getMobile(),
+                client.getCin(),
+                client.getAdresse(),
+                client.getAdresse_banque_origine(),
+                client.getCreated_at()
+        )).collect(Collectors.toList());
    }
 
    public String updateClient(String  cin, Client client){
